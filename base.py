@@ -6,7 +6,7 @@ CORS(app)
 
 # Allow embedding in iframes
 @app.after_request
- def add_header(response):
+def add_header(response):
     response.headers['X-Frame-Options'] = 'ALLOWALL'
     return response
 
@@ -14,7 +14,7 @@ CORS(app)
 todos = []
 
 @app.route('/')
- def index():
+def index():
     html = '''
     <html>
     <head>
@@ -36,7 +36,7 @@ todos = []
     return html % list_items
 
 @app.route('/add', methods=['POST'])
- def add_todo():
+def add_todo():
     task = request.form.get('task')
     if task:
         todos.append(task)
