@@ -1,91 +1,91 @@
-# Todo Desktop App
+# Todoデスクトップアプリ
 
-This project implements a simple ToDo application using a Flask backend and an Electron frontend for Windows.
+このプロジェクトは、Flaskをバックエンド、Electronをフロントエンドとして使用するシンプルなToDoアプリケーションを、Windows向けのデスクトップアプリケーションとして実装しています。
 
-## Contents
+## 内容
 
-- **base.py**: The Flask backend server handling the ToDo application functionality.
-- **requirements.txt**: Python dependencies for the Flask backend.
-- **package.json**: Node project configuration for Electron.
-- **main.js**: Electron main process file which spawns the Flask backend and creates the desktop window.
+- **base.py**: ToDoアプリケーションの機能を処理するFlaskバックエンドサーバーです。
+- **requirements.txt**: Flaskバックエンド用のPython依存パッケージを記載しています。
+- **package.json**: Electron用のNodeプロジェクトの設定ファイルです。
+- **main.js**: Electronのメインプロセスファイルで、Flaskバックエンド（base.py）を起動し、デスクトップウィンドウを作成します。
 
-## Dependency Packages
+## 依存パッケージ
 
-### Python Dependencies
+### Python依存
 
 - Flask
 - flask-cors
 
-These are listed in the `requirements.txt` file.
+これらは `requirements.txt` に記載されています。
 
-### Node Dependencies
+### Node依存
 
-- Electron (version ^23.0.0)
+- Electron (バージョン ^23.0.0)
 
-These are listed in the `package.json` under `devDependencies`.
+これらは、`package.json` の `devDependencies` に記載されています。
 
-## Installation
+## インストール方法
 
-### Python Setup
+### Python環境のセットアップ
 
-1. (Optional) Create a virtual environment:
+1. （任意）仮想環境の作成:
    ```bash
    python -m venv venv
    ```
-2. Activate the virtual environment:
-   - On Windows:
+2. 仮想環境の有効化:
+   - Windowsの場合:
      ```bash
-     venv\Scripts\activate
+     venv\\Scripts\\activate
      ```
-   - On Unix/Mac:
+   - Unix/Macの場合:
      ```bash
      source venv/bin/activate
      ```
-3. Install Python dependencies:
+3. Python依存パッケージのインストール:
    ```bash
    pip install -r requirements.txt
    ```
 
-### Node Setup
+### Node環境のセットアップ
 
-1. Install [Node.js](https://nodejs.org/) if not installed.
-2. Install Node dependencies by running:
+1. [Node.js](https://nodejs.org/) をインストールしてください（未インストールの場合）。
+2. Node依存パッケージのインストール:
    ```bash
    npm install
    ```
 
-## Running the Application
+## アプリケーションの起動方法
 
-### Using Electron (Desktop App)
+### Electronを用いたデスクトップアプリとしての起動
 
-1. Ensure Python dependencies are installed (see Python Setup above).
-2. Start the Electron application with:
+1. Python依存パッケージがインストールされていることを確認してください（上記のPython環境のセットアップを参照）。
+2. 以下のコマンドでElectronアプリケーションを起動します:
    ```bash
    npm start
    ```
-   This will spawn the Flask server (via `base.py`) and open an Electron window pointing to the ToDo app at [http://127.0.0.1:51140](http://127.0.0.1:51140).
+   これにより、Flaskサーバー（`base.py`を経由）が起動し、ElectronウィンドウによりToDoアプリが [http://127.0.0.1:51140](http://127.0.0.1:51140) で表示されます。
 
-### Running Flask Alone (Web Server Only)
+### Flaskのみを使用してウェブサーバーとしての起動
 
-If you want to run just the Flask server without Electron, execute:
+Flaskサーバーのみを起動する場合は、以下のコマンドを実行してください:
    ```bash
    python base.py
    ```
-Then open your browser at [http://127.0.0.1:51140](http://127.0.0.1:51140).
+その後、ブラウザで [http://127.0.0.1:51140](http://127.0.0.1:51140) にアクセスします。
 
-## Troubleshooting
+## トラブルシューティング
 
-- Ensure that all Python dependencies are properly installed.
-- Verify that the Flask server works by running `python base.py` and accessing it via your browser.
+- すべてのPython依存パッケージが正しくインストールされていることを確認してください。
+- `python base.py` を実行して、ブラウザでサーバーにアクセスできるか確認してください。
 
-## Packaging for Distribution
+## 配布用パッケージの作成
 
-For creating a Windows desktop executable, consider using tools like:
+Windows向けのデスクトップ実行可能ファイルを作成する場合は、以下のツールを検討してください:
 - [Electron Packager](https://github.com/electron/electron-packager)
 - [Electron Builder](https://www.electron.build/)
 
-These tools can bundle the entire application, including the Python backend, into a standalone executable.
+これらのツールを利用することで、Pythonバックエンドを含むアプリケーション全体をスタンドアロンの実行可能ファイルにパッケージ化できます。
 
-## License
+## ライセンス
 
-This project is licensed under the MIT License.
+このプロジェクトはMITライセンスの下で公開されています。
