@@ -1,0 +1,14 @@
+{
+  "name": "todo-desktop",
+  "version": "1.0.0",
+  "description": "Electron-based desktop app for ToDo application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^23.0.0"
+  }
+}
