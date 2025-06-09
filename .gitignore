@@ -1,0 +1,20 @@
+# npm 生成ファイル
+node_modules/*
+package-lock.json
+npm-debug.log
+.npmrc
+dist/
+out/
+build/
+
+# Python venv 生成ファイル
+venv/
+.pyc
+.pyo
+.pyd
+__pycache__/
+*.egg-info/
+
+# その他の無視ファイル
+.DS_Store
+.env
