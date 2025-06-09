@@ -4,7 +4,7 @@
   "description": "Electron-based desktop app for ToDo application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "xvfb-run electron . --no-sandbox"
   },
   "author": "",
   "license": "MIT",

@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+app.commandLine.appendSwitch('no-sandbox');
 const { spawn } = require('child_process');
 
 let pyProc = null;
@@ -25,15 +26,15 @@ function createWindow() {
 function startPython() {
   // Start the Flask backend
   pyProc = spawn('python', ['base.py']);
-  
+
   pyProc.stdout.on('data', (data) => {
     console.log(`Python stdout: ${data}`);
   });
-  
+
   pyProc.stderr.on('data', (data) => {
     console.error(`Python stderr: ${data}`);
   });
-  
+
   pyProc.on('close', (code) => {
     console.log(`Python process exited with code ${code}`);
   });
@@ -41,7 +42,7 @@ function startPython() {
 
 app.whenReady().then(() => {
   startPython();
-  createWindow();
+  setTimeout(createWindow, 10000);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
