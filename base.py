@@ -15,25 +15,7 @@ todos = []
 
 @app.route('/')
 def index():
-    html = '''
-    <html>
-    <head>
-        <title>ToDo App</title>
-    </head>
-    <body>
-        <h1>ToDo List</h1>
-        <ul>
-            %s
-        </ul>
-        <form action="/add" method="post">
-            <input type="text" name="task" placeholder="New Task" required>
-            <button type="submit">Add Task</button>
-        </form>
-    </body>
-    </html>
-    '''
-    list_items = ''.join([f"<li>{task}</li>" for task in todos])
-    return html % list_items
+    return render_template('index.html', todos=todos)
 
 @app.route('/add', methods=['POST'])
 def add_todo():

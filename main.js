@@ -10,6 +10,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    title: 'ToDoアプリ',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true
