@@ -5,17 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToDo App</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 4px;
+            border: 1px solid transparent;
+        }
+        li.dragging {
+            opacity: 0.5;
+            border: 1px dashed #007bff;
+        }
+        .task-text {
+            flex-grow: 1;
+            margin-left: 8px;
+        }
+        .delete-btn {
+            margin-left: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #a71d2a;
+        }
+    </style>
 </head>
 <body>
     <h1>ToDo List</h1>
-    <ul>
-        {% for task in todos %}
-        <li>{{ task }}</li>
+    <ul id="todo-list">
+        {% for todo in todos %}
+        <li draggable="true" data-index="{{ loop.index0 }}">
+            <input type="checkbox" class="toggle" data-index="{{ loop.index0 }}" {% if todo.completed %}checked{% endif %}>
+            <span class="task-text {% if todo.completed %}completed{% endif %}">{{ todo.task }}</span>
+            <button class="delete-btn" data-index="{{ loop.index0 }}">削除</button>
+        </li>
         {% endfor %}
     </ul>
     <form action="/add" method="post">
         <input type="text" name="task" placeholder="New Task" required>
         <button type="submit">Add Task</button>
     </form>
+
+    <script>
+    const todoList = document.getElementById('todo-list');
+    let dragSrcEl = null;
+
+    function handleDragStart(e) {
+        dragSrcEl = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+        this.classList.add('dragging');
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        this.classList.add('over');
+    }
+
+    function handleDragLeave(e) {
+        this.classList.remove('over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        if (dragSrcEl != this) {
+            dragSrcEl.innerHTML = this.innerHTML;
+            this.innerHTML = e.dataTransfer.getData('text/html');
+
+            // 並び替え後にインデックスを更新
+            updateIndices();
+            // 並び替えをサーバーに通知
+            sendReorder();
+        }
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        document.querySelectorAll('#todo-list li').forEach(item => {
+            item.classList.remove('dragging');
+            item.classList.remove('over');
+        });
+    }
+
+    function updateIndices() {
+        document.querySelectorAll('#todo-list li').forEach((li, idx) => {
+            li.setAttribute('data-index', idx);
+            // チェックボックスと削除ボタンのdata-indexも更新
+            const checkbox = li.querySelector('.toggle');
+            checkbox.setAttribute('data-index', idx);
+            const deleteBtn = li.querySelector('.delete-btn');
+            deleteBtn.setAttribute('data-index', idx);
+        });
+    }
+
+    function sendReorder() {
+        const order = Array.from(document.querySelectorAll('#todo-list li')).map(li => parseInt(li.getAttribute('data-index')));
+        fetch('/reorder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ order: order })
+        }).then(response => response.json())
+          .then(data => {
+            if (!data.success) {
+                alert('並べ替えの保存に失敗しました');
+            }
+          });
+    }
+
+    document.querySelectorAll('.toggle').forEach(checkbox => {
+        checkbox.addEventListener('change', event => {
+            const index = event.target.getAttribute('data-index');
+            fetch('/toggle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ index: parseInt(index) })
+            }).then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                    const span = event.target.nextElementSibling;
+                    if (data.completed) {
+                        span.classList.add('completed');
+                    } else {
+                        span.classList.remove('completed');
+                    }
+                } else {
+                    alert('更新に失敗しました');
+                }
+              });
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', event => {
+            event.stopPropagation();
+            const index = event.target.getAttribute('data-index');
+            fetch('/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ index: parseInt(index) })
+            }).then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('削除に失敗しました');
+                }
+              });
+        });
+    });
+
+    document.querySelectorAll('li').forEach(li => {
+        li.addEventListener('click', event => {
+            // 削除ボタンのクリックは無視
+            if(event.target.classList.contains('delete-btn')) return;
+            // チェックボックスの切り替え
+            const checkbox = li.querySelector('.toggle');
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+    });
+
+    document.querySelectorAll('#todo-list li').forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragenter', handleDragEnter);
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('dragleave', handleDragLeave);
+        item.addEventListener('drop', handleDrop);
+        item.addEventListener('dragend', handleDragEnd);
+    });
+    </script>
 </body>
 </html>

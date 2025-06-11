@@ -18,3 +18,5 @@ __pycache__/
 # その他の無視ファイル
 .DS_Store
 .env
+
+todos.json
